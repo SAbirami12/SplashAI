@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Translator with Voice</title>
+    <link rel="stylesheet" href="static/styles/styles.css">
+    <!-- footer -->    
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+     <!--information-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+     <!-- ✅ Load jsPDF to prevent "jsPDF is not defined" error -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.jsPDF = window.jspdf.jsPDF; // Ensure jsPDF is accessible globally
+    </script>
+</head>
+<body>
+    <header class="navbar">
+        <div>
+            <img class="logo" src="static/logo.png" alt="Logo">
+            <h1>SPLASH.AI</h1></div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <main class="container">
+        <h1>Language Translator with Voice</h1>
+
+        <div class="input-container">
+            <textarea id="inputText" name="inputText" placeholder="Speak, type, or upload a file here" aria-label="Enter text to translate"></textarea>
+            <!-- Translate Button with Professional Icon -->
+            <button id="translateButton" class="translate-button" title="Translate">
+                <span id="translateIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm3.36 15.17-2.78-6.5a6.38 6.38 0 0 1-2.71 2.2l2 4.67A8 8 0 0 1 7 12H4.05A8 8 0 1 1 15.36 17.17zM12 4a8 8 0 0 1 7.95 7H12zM9 12H6.05a8 8 0 0 1 2.95-6.17z"/>
+                    </svg>
+                </span>
+                <span id="loadingSpinner" class="spinner" style="display: none;"></span>
+            </button>
+        </div>
+
+        <div class="icon-buttons">
+            <button id="micButton" class="circle-icon mic-icon" title="Speak" aria-label="Use microphone for speech input">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V7c0-1.66-1.34-3-3-3s-3 1.34-3 3v4c0 1.66 1.34 3 3 3zm7-3v-1h-2v1c0 2.76-2.24 5-5 5s-5-2.24-5-5v-1H5v1c0 3.53 2.61 6.43 6 6.92v3.08h-2v2h6v-2h-2v-3.08c3.39-.49 6-3.39 6-6.92z"/>
+                </svg>
+            </button>
+
+            <label for="uploadFile" id="uploadButton" class="circle-icon upload-icon" title="Upload Text File">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 2L16 6H13V15H11V6H8L12 2ZM20 18H4C2.9 18 2 18.9 2 20C2 21.1 2.9 22 4 22H20C21.1 22 22 21.1 22 20C22 18.9 21.1 18 20 18Z"/>
+                </svg>
+                <input type="file" id="uploadFile" name="uploadFile" accept=".txt, .pdf, .docx" hidden />
+            </label>
+
+            <button id="shareWhatsapp" class="circle-icon whatsapp-icon" title="Share on WhatsApp">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
+                    <path d="M20.5 3.5c-2.8-2.8-7.3-2.8-10.1 0C7 6 6.3 8.8 7.1 11.3L2 22l10.7-5.1c2.5.8 5.3.1 7.2-1.9 2.8-2.8 2.8-7.3 0-10.1zm-1.5 8.6c-.3.8-1 1.5-1.8 2.1-.3.2-.6.4-.9.6-1.2.6-2.3.4-3.3 0-1.6-.8-2.9-2.2-3.5-3.7-.1-.3-.2-.5-.3-.8-.1-.3-.1-.6.1-.9.2-.4.7-.7 1.1-.6.4.1.7.2 1 .5.2.2.3.4.5.6.1.2.2.3.4.5.2.3.3.5.6.6.2.1.5.1.8 0 .3-.1.6-.2.8-.4.2-.1.4-.3.6-.4.4-.2.8-.2 1.2 0 .4.2.7.5 1 1 .3.4.4.7.4 1.1.1.5.1.9-.1 1.4z"/>
+                </svg>
+            </button>
+
+            <button id="downloadTranslation" class="circle-icon download-icon" title="Download Translation" style="display:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 3v12l4-4 1.5 1.5L12 18l-5.5-5.5L8 11l4 4V3h2zM5 20h14v2H5z"/>
+                </svg>
+            </button>            
+            
+        </div>
+
+        <label for="languageSelect">Select Language:</label>
+        <select id="languageSelect" name="languageSelect" aria-label="Choose target language">
+            <option value="af">Afrikaans</option>
+            <option value="sq">Albanian</option>
+            <option value="am">Amharic</option>
+            <option value="ar">Arabic</option>
+            <option value="hy">Armenian</option>
+            <option value="az">Azerbaijani</option>
+            <option value="eu">Basque</option>
+            <option value="be">Belarusian</option>
+            <option value="bn">Bengali</option>
+            <option value="bs">Bosnian</option>
+            <option value="bg">Bulgarian</option>
+            <option value="ca">Catalan</option>
+            <option value="ceb">Cebuano</option>
+            <option value="zh">Chinese (Simplified)</option>
+            <option value="zh-TW">Chinese (Traditional)</option>
+            <option value="co">Corsican</option>
+            <option value="hr">Croatian</option>
+            <option value="cs">Czech</option>
+            <option value="da">Danish</option>
+            <option value="nl">Dutch</option>
+            <option value="en">English</option>
+            <option value="eo">Esperanto</option>
+            <option value="et">Estonian</option>
+            <option value="fi">Finnish</option>
+            <option value="fr">French</option>
+            <option value="fy">Frisian</option>
+            <option value="gl">Galician</option>
+            <option value="ka">Georgian</option>
+            <option value="de">German</option>
+            <option value="el">Greek</option>
+            <option value="gu">Gujarati</option>
+            <option value="ht">Haitian Creole</option>
+            <option value="ha">Hausa</option>
+            <option value="haw">Hawaiian</option>
+            <option value="he">Hebrew</option>
+            <option value="hi">Hindi</option>
+            <option value="hmn">Hmong</option>
+            <option value="hu">Hungarian</option>
+            <option value="is">Icelandic</option>
+            <option value="ig">Igbo</option>
+            <option value="id">Indonesian</option>
+            <option value="ga">Irish</option>
+            <option value="it">Italian</option>
+            <option value="ja">Japanese</option>
+            <option value="jv">Javanese</option>
+            <option value="kn">Kannada</option>
+            <option value="kk">Kazakh</option>
+            <option value="km">Khmer</option>
+            <option value="rw">Kinyarwanda</option>
+            <option value="ko">Korean</option>
+            <option value="ku">Kurdish</option>
+            <option value="ky">Kyrgyz</option>
+            <option value="lo">Lao</option>
+            <option value="la">Latin</option>
+            <option value="lv">Latvian</option>
+            <option value="lt">Lithuanian</option>
+            <option value="lb">Luxembourgish</option>
+            <option value="mk">Macedonian</option>
+            <option value="mg">Malagasy</option>
+            <option value="ms">Malay</option>
+            <option value="ml">Malayalam</option>
+            <option value="mt">Maltese</option>
+            <option value="mi">Maori</option>
+            <option value="mr">Marathi</option>
+            <option value="mn">Mongolian</option>
+            <option value="my">Myanmar (Burmese)</option>
+            <option value="ne">Nepali</option>
+            <option value="no">Norwegian</option>
+            <option value="ny">Nyanja (Chichewa)</option>
+            <option value="or">Odia (Oriya)</option>
+            <option value="ps">Pashto</option>
+            <option value="fa">Persian</option>
+            <option value="pl">Polish</option>
+            <option value="pt">Portuguese</option>
+            <option value="pa">Punjabi</option>
+            <option value="ro">Romanian</option>
+            <option value="ru">Russian</option>
+            <option value="sm">Samoan</option>
+            <option value="gd">Scottish Gaelic</option>
+            <option value="sr">Serbian</option>
+            <option value="st">Sesotho</option>
+            <option value="sn">Shona</option>
+            <option value="sd">Sindhi</option>
+            <option value="si">Sinhala</option>
+            <option value="sk">Slovak</option>
+            <option value="sl">Slovenian</option>
+            <option value="so">Somali</option>
+            <option value="es">Spanish</option>
+            <option value="su">Sundanese</option>
+            <option value="sw">Swahili</option>
+            <option value="sv">Swedish</option>
+            <option value="tl">Tagalog</option>
+            <option value="tg">Tajik</option>
+            <option value="ta">Tamil</option>
+            <option value="tt">Tatar</option>
+            <option value="te">Telugu</option>
+            <option value="th">Thai</option>
+            <option value="tr">Turkish</option>
+            <option value="tk">Turkmen</option>
+            <option value="uk">Ukrainian</option>
+            <option value="ur">Urdu</option>
+            <option value="ug">Uyghur</option>
+            <option value="uz">Uzbek</option>
+            <option value="vi">Vietnamese</option>
+            <option value="cy">Welsh</option>
+            <option value="xh">Xhosa</option>
+            <option value="yi">Yiddish</option>
+            <option value="yo">Yoruba</option>
+            <option value="zu">Zulu</option>
+        </select>
+        
+        <div id="outputText" class="output-container">
+            <div class="translated-text" id="translatedText" style="display:none;" aria-live="polite"></div>
+            <div class="original-text" id="transliterationText" style="display:none;"></div>
+        </div>
+
+        <div id="audioContainer" class="audio-container" style="display:none;">
+            <!-- Audio Player -->
+            <audio id="translationAudio" controls aria-label="Translation audio"></audio>
+        </div>
+        
+    </main>
+    <section id="how-to-use" class="how-to-use">
+        <h2><i class="fas fa-language"></i> How to Use Splash.AI for Translation</h2>
+        <p>Follow these simple steps to translate text, speech, and documents using Splash.AI.</p>
+    
+        <div class="steps-container">
+            <div class="step">
+                <h3><i class="fas fa-globe"></i> Step 1: Open the Translation Page</h3>
+                <p>Click on the <strong>"Translate"</strong> tab in the navigation menu.</p>
+            </div>
+    
+            <div class="step">
+                <h3><i class="fas fa-keyboard"></i> Step 2: Enter Your Text</h3>
+                <p>Type or paste text in the input box, select the target language, and click "Translate".</p>
+            </div>
+    
+            <div class="step">
+                <h3><i class="fas fa-microphone"></i> Step 3: Translate Spoken Words</h3>
+                <p>Click the <strong>"Mic"</strong> button, speak, and let the AI convert your speech into text.</p>
+            </div>
+    
+            <div class="step">
+                <h3><i class="fas fa-volume-up"></i> Step 4: Listen to the Translation</h3>
+                <p>Click "🔊 Play" to hear the translation in a natural-sounding AI voice.</p>
+            </div>
+    
+            <div class="step">
+                <h3><i class="fas fa-share-alt"></i> Step 5: Save or Share Your Translation</h3>
+                <ul>
+                    <li><i class="fas fa-file-download"></i> <strong>Download as PDF</strong></li>
+                    <li><i class="fab fa-whatsapp"></i> <strong>Share via WhatsApp</strong></li>
+                    <li><i class="fas fa-music"></i> <strong>Download Translated Audio</strong></li>
+                </ul>
+            </div>
+    
+            <div class="step">
+                <h3><i class="fas fa-file-upload"></i> Step 6: Upload a File for Bulk Translation</h3>
+                <p>Upload a `.txt`, `.pdf`, or `.docx` file, and the system will translate it instantly.</p>
+            </div>
+        </div>
+    
+        <p class="final-message">🚀 <strong>Start using Splash.AI today and break language barriers effortlessly! 🌍✨</strong></p>
+    </section>
+    
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- About Splash.ai -->
+            <div class="footer-section about">
+                <h2>About Splash.ai</h2>
+                <p>
+                    Splash.ai is your all-in-one AI-powered solution for seamless language translation and image generation.
+                    With cutting-edge AI, we make global communication and creativity effortless.
+                </p>
+                <img src="static/logo.png" alt="Splash.ai Logo" class="footer-logo">
+            </div>
+    
+            <!-- Quick Links -->
+            <div class="footer-section quick-links">
+                <h2>Quick Links</h2>
+                <ul>
+                    <li><a href="http://127.0.0.1:5000/">Home</a></li>
+                    <li><a href="/gen">Image Generator</a></li>
+                    <li><a href="/index">Text Translation</a></li>
+                    <li><a href="http://127.0.0.1:5000/">Pricing</a></li>
+                    <li><a href="http://127.0.0.1:5000/">Support</a></li>
+                    <li><a href="http://127.0.0.1:5000/">Blog</a></li>
+                </ul>
+            </div>
+    
+            <!-- Follow Us -->
+<div class="footer-section social">
+    <h2>Follow Us</h2>
+    <div class="social-icons">
+        <a href="https://www.facebook.com/SplashAI" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://twitter.com/SplashAI" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/SplashAI" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/company/SplashAI" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://www.youtube.com/c/SplashAI" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+    </div>
+</div>
+
+            <!-- Contact Info -->
+            <div class="footer-section contact">
+                <h2>Contact Us</h2>
+                <p><i class="fas fa-envelope"></i> Email: support@splash.ai</p>
+                <p><i class="fas fa-phone"></i> Phone: +1 (123) 456-7890</p>
+                <p><i class="fas fa-map-marker-alt"></i> Address: 123 AI Street, Tech City, USA</p>
+            </div>
+    
+            <!-- Newsletter Signup -->
+            <div class="footer-section newsletter">
+                <h2>Stay Updated</h2>
+                <p>Subscribe to our newsletter for the latest updates and offers.</p>
+                <form action="#">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    
+        <!-- Legal Information -->
+        <div class="footer-bottom">
+            <p>&copy; 2025 Splash.ai. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+    <script>
+        function logout() {
+            window.location.href = "http://127.0.0.1:5000/";
+        }
+        </script>
+
+    <script src="static/scripts/script.js"></script>
+</body>
+</html>

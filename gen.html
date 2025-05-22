@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splash.AI - AI Image Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/gen.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <!--editing -->
+    <!-- Cropper.js for Cropping -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<!-- Lena.js for Image Enhancement -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lena.js/2.0.0/lena.min.js"></script>
+
+</head>
+<body>
+    <nav>
+        <div>
+        <img class="logo" src="static/logo.png" alt="Logo" style="height:100px; width:100px; ">
+        <h1>Splash.AI</h1></div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
+
+    <header>
+        <h1>AI Image Generator</h1>
+    </header>
+
+    <main>
+        <section class="generator-section">
+            <input type="text" id="prompt" placeholder="Enter a prompt to generate an image">
+            <button onclick="generateImage()">Generate</button>
+
+            <!-- Progress Loader -->
+            <div id="loading" class="loader" style="display: none;"></div>
+
+            <!-- Image Result Section -->
+            <div id="imageContainer">
+                <div class="dropdown" id="optionsDropdown" style="display: none;">
+                    <button class="dropbtn">☰ Options</button>
+                    <div class="dropdown-content">
+                        <a id="downloadBtn" download="generated_image.jpg">📥 Download Image</a>
+                        <a id="whatsappShare" target="_blank">📤 Share via WhatsApp</a>
+                        <a id="gmailShare" target="_blank">📧 Share via Gmail</a>
+                        <a href="#" onclick="deleteImage()">🗑️ Delete Image</a>
+                    </div>
+                </div>
+
+                <img id="generatedImage" src="" alt="Generated Image" style="display: none;">
+            </div>
+        </section>
+
+        <!-- Image Gallery Button -->
+        <button id="galleryBtn" onclick="toggleGallerySelection()">📸 View Image Gallery</button>
+
+        <!-- Gallery Selection Modal -->
+        <div id="gallerySelection" style="display: none;">
+            <h2>Select Gallery View</h2>
+            <button onclick="showCarouselView()">🔄 Carousel View</button>
+            <button onclick="showGridView()">🔳 Grid View</button>
+            <button onclick="toggleGallerySelection()">❌ Close</button>
+        </div>
+
+        <!-- Image Gallery Container -->
+        <section id="imageGalleryContainer" style="display: none;">
+            <!-- Carousel View -->
+            <section id="carouselView" style="display: none;">
+                <h2>Previously Generated Images</h2>
+                <div class="carousel">
+                    <button class="arrow" onclick="prevImage()">&#10094;</button>
+                    <div class="gallery-image-container">
+                        <div class="dropdown" id="galleryDropdown" style="display: none;">
+                            <button class="dropbtn">☰ Options</button>
+                            <div class="dropdown-content">
+                                <a id="galleryDownloadBtn" download="gallery_image.jpg">📥 Download Image</a>
+                                <a id="galleryWhatsappShare" target="_blank">📤 Share via WhatsApp</a>
+                                <a id="galleryGmailShare" target="_blank">📧 Share via Gmail</a>
+                                <a href="#" onclick="deleteGalleryImage()">🗑️ Delete Image</a>
+                            </div>
+                        </div>
+                        <img id="galleryImage" src="" alt="Gallery Image" class="active">
+                    </div>
+                    <button class="arrow" onclick="nextImage()">&#10095;</button>
+                </div>
+            </section>
+
+            <!-- Grid View -->
+            <section id="gridView" style="display: none;">
+                <h2>Image Gallery</h2>
+                <div class="image-grid"></div>
+            </section>
+        </section>
+
+        <section id="image-gen-benefits" class="usage-benefits">
+            <h2><i class="fas fa-paint-brush"></i> Why Use Splash.AI for Image Generation?</h2>
+            <p>Discover how our AI-powered image generator can enhance your creativity and workflow.</p>
+        
+            <div class="benefits-container">
+                <div class="benefit">
+                    <h3><i class="fas fa-magic"></i> AI-Powered Creativity</h3>
+                    <p>Generate stunning images from text prompts using advanced AI technology.</p>
+                </div>
+        
+                <div class="benefit">
+                    <h3><i class="fas fa-images"></i> High-Quality Results</h3>
+                    <p>Create professional, high-resolution images suitable for various projects.</p>
+                </div>
+        
+                <div class="benefit">
+                    <h3><i class="fas fa-palette"></i> Customizable Styles</h3>
+                    <p>Choose different art styles, including realistic, digital art, and abstract.</p>
+                </div>
+        
+                <div class="benefit">
+                    <h3><i class="fas fa-cogs"></i> Advanced Editing Tools</h3>
+                    <p>Edit your generated images with cropping, enhancements, and filters.</p>
+                </div>
+        
+                <div class="benefit">
+                    <h3><i class="fas fa-save"></i> Download & Share</h3>
+                    <p>Save your generated images in high-quality formats and share them instantly.</p>
+                </div>
+        
+                <div class="benefit">
+                    <h3><i class="fas fa-bolt"></i> Fast & Efficient</h3>
+                    <p>Generate images in seconds with real-time processing.</p>
+                </div>
+        
+                <div class="benefit">
+                    <h3><i class="fas fa-user-friends"></i> User-Friendly Interface</h3>
+                    <p>Designed for both beginners and professionals with an intuitive UI.</p>
+                </div>
+        
+                <div class="benefit">
+                    <h3><i class="fas fa-lock"></i> Secure & Private</h3>
+                    <p>Your data and generated images are safely stored and protected.</p>
+                </div>
+            </div>
+        
+            <p class="cta-message">🎨 Start creating amazing AI-generated images now with Splash.AI! 🚀</p>
+        </section>
+        
+        <footer class="footer">
+        <div class="footer-container">
+            <!-- About Splash.ai -->
+            <div class="footer-section about">
+                <h2>About Splash.ai</h2>
+                <p>
+                    Splash.ai is your all-in-one AI-powered solution for seamless language translation and image generation.
+                    With cutting-edge AI, we make global communication and creativity effortless.
+                </p>
+                <img src="static/logo.png" alt="Splash.ai Logo" class="footer-logo">
+            </div>
+    
+            <!-- Quick Links -->
+            <div class="footer-section quick-links">
+                <h2>Quick Links</h2>
+                <ul>
+                    <li><a href="http://127.0.0.1:5000/">Home</a></li>
+                <li><a href="/gen">Image Generator</a></li>
+                <li><a href="/index">Translator</a></li>
+                <li><a href="http://127.0.0.1:5000/">About Us</a></li>
+                <li><a href="http://127.0.0.1:5000/">Contact</a></li>
+                </ul>
+            </div>
+    
+            <!-- Follow Us -->
+<div class="footer-section social">
+    <h2>Follow Us</h2>
+    <div class="social-icons">
+        <a href="https://www.facebook.com/SplashAI" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://twitter.com/SplashAI" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/SplashAI" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/company/SplashAI" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://www.youtube.com/c/SplashAI" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+    </div>
+</div>
+
+            <!-- Contact Info -->
+            <div class="footer-section contact">
+                <h2>Contact Us</h2>
+                <p><i class="fas fa-envelope"></i> Email: support@splash.ai</p>
+                <p><i class="fas fa-phone"></i> Phone: +1 (123) 456-7890</p>
+                <p><i class="fas fa-map-marker-alt"></i> Address: 123 AI Street, Tech City, USA</p>
+            </div>
+    
+            <!-- Newsletter Signup -->
+            <div class="footer-section newsletter">
+                <h2>Stay Updated</h2>
+                <p>Subscribe to our newsletter for the latest updates and offers.</p>
+                <form action="#">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    
+        <!-- Legal Information -->
+        <div class="footer-bottom">
+            <p>&copy; 2025 Splash.ai. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+    </main>
+
+    <script>
+        function logout() {
+            window.location.href = "http://127.0.0.1:5000/";
+        }
+
+        function toggleGallerySelection() {
+            let selectionModal = document.getElementById("gallerySelection");
+            selectionModal.style.display = (selectionModal.style.display === "none" || selectionModal.style.display === "") ? "block" : "none";
+        }
+    </script>
+
+    <script src="{{ url_for('static', filename='scripts/gen.js') }}"></script>
+</body>
+</html>

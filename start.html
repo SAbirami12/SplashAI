@@ -1,0 +1,983 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splash.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html{
+            scroll-behavior: smooth;
+        }
+        /* Global styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensures that the page takes up at least the full viewport height */
+        }
+
+        nav {
+    background-color: #7f00ff;
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Link styling */
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    margin: 0 15px;
+}
+
+/* Brand name styling */
+.brand-name {
+    font-weight: bold;
+    font-size: 30px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center; /* Vertically align logo and text */
+}
+.brand-name .logo{
+margin-right:-40px;
+margin-left:-50px;
+}
+         .login-btn {
+            padding: 12px 25px;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #e64a19;
+        }
+
+        .user-info {
+            text-align: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logout-btn {
+            padding: 12px 25px;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .logout-btn:hover {
+            background-color: #e64a19;
+        }
+
+        /* Main container styling */
+        .container {
+            padding: 60px 20px;
+            text-align: center;
+            flex: 1; /* Makes sure the content takes up all available space */
+background-color:400px powderedblue;
+        }
+
+        h1 {
+            font-size: 50px;
+            color: #333;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        p {
+            font-size: 20px;
+            color: #555;
+            animation: fadeInText 2s ease-in-out;
+        }
+
+        /* Add space after welcome text */
+        .welcome-space {
+            margin-bottom: 100px; /* Add extra space below the welcome text */
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .website-description {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .website-description h2 {
+            font-size: 32px;
+            color: #7f00ff;
+            margin-bottom: 10px;
+        }
+
+        .website-description p {
+            font-size: 18px;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        #serviceDetail {
+    max-height: 400px;
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f8f8f8;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+        /* Add background color around the service containers */
+        .service-container-background {
+            background-color: #f0f0f0; /* Light background color for the section */
+            padding: 40px 20px;
+            border-radius: 10px;
+        }
+
+        .service-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .service-box {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .service-box:hover {
+            transform: scale(1.05);
+        }
+
+        .service-box h3 {
+            color: #7f00ff;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .service-box p {
+            color: #777;
+        }
+        /* Login modal */
+        .login-container {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        /* Styling for the login button */
+button {
+    background-color: #7f00ff; /* Green background color */
+    color: white; /* White text */
+    padding: 12px 20px; /* Padding around the text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color:#7f00ff; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+button:focus {
+    outline: none; /* Remove the outline when focused */
+}
+
+/* Video container styling */
+.video-container {
+    width: 100%;
+    background: linear-gradient(135deg, #7f00ff, #ff5722); /* Gradient background for a modern look */
+    padding: 40px 0; /* Increased padding for better spacing */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Video styling */
+.video-container video {
+    max-width: 75%; /* Adjust width for better proportions */
+    height: auto;
+    border-radius: 12px; /* Rounded corners for a sleek look */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Hover effect for the video */
+.video-container video:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
+}
+
+
+.close-btn {
+            font-size: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+         /* Floating AI Assistant */
+             /* Floating AI Assistant */
+        .ai-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ffffff;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .ai-assistant:hover {
+            transform: scale(1.1);
+        }
+
+        .ai-assistant video {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Modal for selecting service */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #7f00ff;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            background-color: #7f00ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .modal-button:hover {
+            background-color: #5c00b3;
+        }
+
+        /* Section for detailed information */
+        .detail-section {
+            display: none;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .detail-section h3 {
+            font-size: 28px;
+            color: #7f00ff;
+        }
+
+        .detail-section p {
+            font-size: 20px;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+
+        .next-button {
+            padding: 10px 20px;
+            background-color: #7f00ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .next-button:hover {
+            background-color: #5c00b3;
+        }
+
+        /* AI Message Container for Typing Effect */
+        .ai-message {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            animation: messageFadeIn 3s forwards;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            border-right: 2px solid #2c3e50;
+            z-index: 1000; /* Ensure it's on top of everything else */
+        }
+
+        @keyframes messageFadeIn {
+            0% {
+                opacity: 0;
+                width: 0;
+            }
+            100% {
+                opacity: 1;
+                width: auto;
+            }
+        }
+.image-container-space {
+        height: 70px; /* Add some space after the image container */
+    }
+        /* Container Boxes */
+        .container-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            width: 300px;
+            height: 300px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            padding: 20px;
+            position: relative;
+        }
+
+        .box img {
+            width: 100%; /* Ensure both images have the same width */
+            height: 200px; /* Ensure both images have the same height */
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .box h2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .box p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Video Footer Section */
+        .video-footer {
+            position: relative;
+            width: 100%;
+            height: 650px; /* Increased height for more space */
+            overflow: hidden;
+        }
+
+        .video-footer video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Footer Content Overlay */
+        .footer-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; /* Keeps content fully inside */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; /* Ensures content stays at the bottom */
+            text-align: center;
+            color: white;
+            padding-bottom: 30px; /* Extra spacing from the bottom */
+        }
+
+        /* Navigation Links */
+        .footer-content {
+            margin-bottom: 15px;
+        }
+
+        .footer-nav {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .footer-nav:hover {
+            text-decoration: underline;
+        }
+
+        /* Social Media Icons */
+        .footer-icons {
+            margin-bottom: 15px;
+        }
+
+        .footer-icons a {
+            color: white;
+            font-size: 26px;
+            margin: 0 12px;
+            transition: color 0.3s;
+        }
+
+        .footer-icons a:hover {
+            color: #FFD700; /* Gold hover effect */
+        }
+
+        /* Copyright */
+        .footer-bottom {
+            font-size: 16px;
+        }
+
+        /* User info adjustments */
+        .user-info img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            margin-top: 5px;
+            font-size: 18px;
+            color: #fff;
+        }
+        .terms-container {
+        text-align: center;
+        padding: 50px 20px;
+        background: linear-gradient(135deg, #7f00ff, #ff5722);
+        color: #fff;
+        border-radius: 10px;
+        margin: 50px auto;
+        max-width: 1500px;
+        margin-top:200px;
+    }
+
+    .terms-intro {
+        font-size: 18px;
+        margin-bottom: 30px;
+        opacity: 0.9;
+    }
+
+    .terms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .terms-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        transition: 0.3s;
+    }
+
+    .terms-card:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-5px);
+    }
+
+    .terms-card i {
+        font-size: 40px;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .terms-card h3 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .terms-card p {
+        font-size: 16px;
+        opacity: 0.8;
+    }
+</style>
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+<nav>
+    <div class="brand-name">
+        <!-- Logo Image -->
+        <img class="logo" src="static/logo.png" alt="Logo" style="height:190px; width:190px; ">
+        Splash.AI
+    </div>
+    <div class="user-info" id="userInfo" style="display:none;">
+        <img class="user-image" src="static\images.png" alt="User Image">
+        <p id="userGreeting">Hi, <span id="userName"></span>!</p>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    <button class="login-btn" id="loginButton" onclick="toggleLoginLogout()">Login</button>
+</nav>
+
+    <!-- Main container -->
+    <div class="container">
+    <div class="welcome-space"></div>
+
+        <h1>Welcome to Splash.AI</h1>
+        <p>Your creative journey begins here. Let's create, translate, and visualize like never before.</p>
+        <!-- Add extra space after welcome text -->
+        <div class="welcome-space"></div>
+
+        <!-- Service Information - 2x2 Grid with background color -->
+        <div class="service-container-background">
+            <div class="service-container">
+                <div class="service-box">
+                    <h3>Text Translation</h3>
+                    <p>Translate your content seamlessly across multiple languages with AI-powered translations.</p>
+                </div>
+                <div class="service-box">
+                    <h3>Image Generation</h3>
+                    <p>Generate high-quality images based on textual descriptions with our AI model.</p>
+                </div>
+                <div class="service-box">
+                    <h3>AI Analytics</h3>
+                    <p>Analyze data insights quickly and efficiently using our AI-powered analytics tools.</p>
+                </div>
+                <div class="service-box">
+                    <h3>AI Chatbot</h3>
+                    <p>Enhance customer interaction with our AI-driven chatbot solutions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login modal -->
+    <div class="login-container" id="loginModal">
+        <div class="login-form">
+            <span class="close-btn" onclick="closeLoginForm()">&times;</span>
+            <h2>Login</h2>
+            <form>
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="button" onclick="submitLogin()">Login</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <!-- Container Boxes with Images -->
+    <div class="container-boxes">
+        <div class="box" onclick="window.location.href='\index'">
+            <img src="static\text.png" alt="Text Translation">
+            <h2>Text Translation</h2>
+            <p>Transform and translate your text with ease.</p>
+        </div>
+        <div class="box" onclick="window.location.href='\gen'">
+            <img src="static\aiim.jpg" alt="Image Generation">
+            <h2>Image Generation</h2>
+            <p>Bring your ideas to life with stunning visuals.</p>
+        </div>
+    </div>
+<div class="image-container-space"></div>
+
+<!-- Video Container -->
+<div class="video-container">
+    <video width="100%" autoplay loop muted>
+        <source src="static/splashai.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+<!-- Terms & Services Section -->
+<div id="terms-section" class="terms-container">
+    <h2>Terms & Services</h2>
+    <p class="terms-intro">Please read our terms carefully before using Splash.AI. By accessing our services, you agree to abide by the following terms.</p>
+
+    <div class="terms-grid">
+        <div class="terms-card">
+            <i class="fas fa-user-shield"></i>
+            <h3>User Privacy</h3>
+            <p>We value your privacy and ensure that your data is protected with end-to-end encryption.</p>
+        </div>
+        <div class="terms-card">
+            <i class="fas fa-balance-scale"></i>
+            <h3>Fair Usage</h3>
+            <p>Our AI services are meant for ethical and legal use only. Misuse may result in account suspension.</p>
+        </div>
+        <div class="terms-card">
+            <i class="fas fa-money-check-alt"></i>
+            <h3>Payment & Refunds</h3>
+            <p>We offer transparent pricing. Refunds are only applicable for billing errors within 7 days.</p>
+        </div>
+        <div class="terms-card">
+            <i class="fas fa-headset"></i>
+            <h3>Support & Assistance</h3>
+            <p>Need help? Our support team is available 24/7 to assist you with any queries.</p>
+        </div>
+        <div class="terms-card">
+            <i class="fas fa-copyright"></i>
+            <h3>Content Ownership</h3>
+            <p>Users retain ownership of their generated content but grant Splash.AI permission for limited promotional use.</p>
+        </div>
+        <div class="terms-card">
+            <i class="fas fa-server"></i>
+            <h3>Service Availability</h3>
+            <p>While we strive for 99.9% uptime, we may experience occasional maintenance or downtime.</p>
+        </div>
+    </div>
+</div>
+ <!-- Video Footer Section -->
+    <!-- Include Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="video-footer">
+       <video autoplay muted loop>
+           <source src="static\down.mp4" type="video/mp4">
+           Your browser does not support the video tag.
+       </video>
+
+       <!-- Overlay Content Inside Video -->
+       <div class="footer-overlay">
+           <!-- Footer Navigation -->
+           <div class="footer-content">
+               <a href="http://127.0.0.1:5000/" class="footer-nav">Home</a>
+               <a href="\index" class="footer-nav">Text Translation</a>
+               <a href="\gen" class="footer-nav">Image Generation</a>
+               <a href="http://127.0.0.1:5000/" class="footer-nav">Login</a>
+               <a href="#terms-section" class="footer-nav">Terms of Service</a>
+           </div>
+
+           <!-- Social Media Icons -->
+           <div class="footer-icons">
+               <a href="https://facebook.com" aria-label="Facebook" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+               <a href="https://twitter.com" aria-label="Twitter" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+               <a href="https://instagram.com" aria-label="Instagram" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+               <a href="https://linkedin.com" aria-label="LinkedIn" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+           </div>
+
+           <!-- Copyright -->
+           <div class="footer-bottom">
+               <p>&copy; 2025 Splash.ai. All rights reserved.</p>
+           </div>
+       </div>
+   </div>
+
+    <!-- Floating AI Assistant -->
+    <div class="ai-assistant" onclick="openModal()">
+        <video src="static/side.mp4" autoplay muted loop></video>
+    </div>
+
+    <!-- AI Assistant Message Area (Fixed) -->
+    <div id="ai-message" class="ai-message"></div>
+
+    <!-- Floating Modal for AI Assistant -->
+    <div id="aiModal" class="modal">
+        <div class="modal-content">
+            <h2>How can I assist you?</h2>
+            <button class="modal-button" onclick="showServiceDetail('translation')">Text Translation</button>
+            <button class="modal-button" onclick="showServiceDetail('image')">Image Generation</button>
+            <button class="modal-button" onclick="showServiceDetail('analytics')">AI Analytics</button>
+            <div id="serviceDetail"></div> <!-- Container for displaying service details -->
+        </div>
+    </div>
+
+    <script>
+        // Handle persistent login state
+let loggedIn = localStorage.getItem('loggedIn') === 'true';
+const loginButton = document.getElementById('loginButton');
+const userSection = document.getElementById('userInfo');
+const userNameDisplay = document.getElementById('userName');
+const userGreeting = document.getElementById('userGreeting');
+
+if (loggedIn) {
+    const userName = localStorage.getItem('userName');
+    userNameDisplay.textContent = userName;
+    loginButton.style.display = 'none'; // Hide login button after login
+    userSection.style.display = 'block'; // Show user info section
+}
+
+// Toggle between Login and Logout
+function toggleLoginLogout() {
+    if (loggedIn) {
+        logout();
+    } else {
+        showLoginForm();
+    }
+}
+
+// Show the login form
+function showLoginForm() {
+    document.getElementById('loginModal').style.display = 'flex';
+}
+
+// Close the login form
+function closeLoginForm() {
+    document.getElementById('loginModal').style.display = 'none';
+}
+
+// Submit login form
+function submitLogin() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    if (name && email && password) {
+        localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('userName', name);
+        loggedIn = true;
+        const userName = localStorage.getItem('userName');
+        userNameDisplay.textContent = userName;
+        loginButton.style.display = 'none';
+        userSection.style.display = 'block';
+        closeLoginForm();
+    }
+}
+
+// Logout function
+function logout() {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('userName');
+    loggedIn = false;
+    loginButton.style.display = 'block';
+    userSection.style.display = 'none';
+}
+
+// JavaScript to animate typing effect with multiple messages
+let messages = [
+    "Hi there! 👋", 
+    "How can I assist you today?", 
+    "Unleash your creativity with AI! 🎨", 
+    "Splash AI is here to help! 🚀"
+];
+
+let index = 0;
+let aiMessageElement = document.getElementById('ai-message');
+
+function typeMessage() {
+    aiMessageElement.style.opacity = 1;
+    aiMessageElement.style.width = "auto"; // Expands width dynamically
+    aiMessageElement.textContent = '';
+
+    let currentMessage = messages[index];
+    let currentChar = 0;
+
+    let typingInterval = setInterval(function() {
+        aiMessageElement.textContent += currentMessage.charAt(currentChar);
+        currentChar++;
+        if (currentChar === currentMessage.length) {
+            clearInterval(typingInterval);
+            setTimeout(() => {
+                aiMessageElement.style.width = "0"; // Shrinks width before changing text
+                aiMessageElement.textContent = ''; 
+                index = (index + 1) % messages.length;
+                setTimeout(typeMessage, 1000); // Delay before typing new message
+            }, 1500);
+        }
+    }, 100);
+}
+
+window.onload = typeMessage;
+
+// Open AI Modal
+function openModal() {
+    document.getElementById('aiModal').style.display = 'flex';
+}
+
+// Display Service Details Dynamically
+function showServiceDetail(service) {
+    const serviceDetailContainer = document.getElementById('serviceDetail');
+    let serviceDetail = '';
+
+    if (service === 'translation') {
+        serviceDetail = `<h3>🌍 Text Translation</h3>
+            <p>Break language barriers with AI-powered translations. Type your text and choose a target language for an instant translation. 😊</p>
+            <p><b>Example:</b> "Hello" → "Hola" (Spanish)</p>
+            <button class="next-button" onclick="askQuestion('translation')">Learn More? 🤔</button>`;
+    } else if (service === 'image') {
+        serviceDetail = `<h3>🎨 AI Image Generation</h3>
+            <p>Describe anything, and AI will create a stunning image for you. Turn your imagination into reality! ✨</p>
+            <p><b>Example:</b> "A futuristic city at sunset" → AI-generated image.</p>
+            <button class="next-button" onclick="askQuestion('image')">Learn More? 🤔</button>`;
+    } else if (service === 'analytics') {
+        serviceDetail = `<h3>📊 AI Analytics</h3>
+            <p>Analyze data in seconds! Upload your dataset and get AI-powered insights to make better decisions. 🔍</p>
+            <p><b>Example:</b> "Market trends in 2024" → AI-generated report.</p>
+            <button class="next-button" onclick="askQuestion('analytics')">Learn More? 🤔</button>`;
+    }
+
+    serviceDetailContainer.innerHTML = serviceDetail;
+
+    // **Ensure scrolling to new content**
+    serviceDetailContainer.scrollTop = serviceDetailContainer.scrollHeight;
+}
+
+// **Updated: Ask follow-up questions dynamically inside the container**
+function askQuestion(service) {
+    let questions = [
+        "Would you like to see an example?",
+        "Want to try a live demo?",
+        "Would you like some tips on using this feature?",
+        "Need help getting started?",
+        "Want to know how this can help you?",
+        "Would you like to explore more advanced features?",
+        "Curious about how AI makes this possible?"
+    ];
+
+    let randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+    let responseContainer = document.getElementById('serviceDetail');
+    
+    let questionHTML = `
+        <div class="question-container">
+            <p class="ai-question">${randomQuestion}</p>
+            <button class="yes-button" onclick="provideAdditionalInfo('${service}')">Yes 👍</button>
+            <button class="no-button" onclick="goToNextPage('${service}')">No 👎</button>
+        </div>
+    `;
+
+    responseContainer.innerHTML += questionHTML; // Append question inside the container
+
+    // **Ensure scrolling to the newly added content**
+    responseContainer.scrollTop = responseContainer.scrollHeight;
+}
+
+// **Updated: Provide additional details dynamically**
+function provideAdditionalInfo(service) {
+    let responseContainer = document.getElementById('serviceDetail');
+
+    let extraInfo = {
+        "translation": `<h3>🌍 More About AI Translation</h3>
+            <p>Our AI-powered translation system uses deep learning to understand context, grammar, and even slang. 🧠</p>
+            <p>Supports over <b>100 languages</b>, including real-time speech translation! 🗣️</p>
+            <button class="next-button" onclick="goToNextPage('translation')">Try Translation 🚀</button>`,
+
+        "image": `<h3>🎨 More About AI Image Generation</h3>
+            <p>AI Image Generation uses Stable Diffusion models to create stunning visuals from text descriptions. 🖌️</p>
+            <p>Features include: <b>HD Upscaling</b>, <b>Art Style Selection</b>, and <b>Realistic Rendering</b>! 🎭</p>
+            <button class="next-button" onclick="goToNextPage('image')">Generate Now! 🎨</button>`,
+
+        "analytics": `<h3>📊 More About AI Analytics</h3>
+            <p>AI-powered analytics helps businesses find trends, predict market behavior, and optimize performance. 📈</p>
+            <p>Key benefits: <b>Automated Reports</b>, <b>AI-Driven Insights</b>, and <b>Data Visualization</b>. 📊</p>
+            <button class="next-button" onclick="goToNextPage('analytics')">Start Analyzing 📊</button>`
+    };
+
+    responseContainer.innerHTML += extraInfo[service];
+
+    // **Ensure scrolling to the newly added content**
+    responseContainer.scrollTop = responseContainer.scrollHeight;
+}
+
+// **Redirect to respective pages**
+function goToNextPage(service) {
+    let pageMap = {
+        'translation': "/index",
+        'image': "/gen",
+        'analytics': "analyticsPage.html"
+    };
+
+    if (pageMap[service]) {
+        setTimeout(() => {
+            window.location.href = pageMap[service];
+        }, 1500);
+    }
+}
+    </script>
+
+</body>
+</html>
