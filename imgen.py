@@ -12,7 +12,7 @@ if not os.path.exists(IMAGE_DIR):
     os.makedirs(IMAGE_DIR)
 
 # Hugging Face API Configuration
-HUGGING_FACE_API_KEY = "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"  # Replace with your actual API key
+HUGGING_FACE_API_KEY = "***"  # Replace with your actual API key
 HUGGING_FACE_MODEL = "stabilityai/stable-diffusion-xl-base-1.0"
 HEADERS = {"Authorization": f"Bearer {HUGGING_FACE_API_KEY}"}
 
@@ -88,3 +88,4 @@ def delete_image():
 
     except Exception as e:
         return jsonify({"error": "Failed to delete image.", "details": str(e)}), 500
+
