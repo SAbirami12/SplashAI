@@ -49,7 +49,7 @@ Postgraduate in Computer Science | Full-Stack Developer | AI Enthusiast
 
 I’m passionate about coding, developing scalable applications, and integrating innovative AI-driven solutions. I enjoy learning new technologies and collaborating on dynamic projects.
 
-📧 Feel free to reach out to me via email: [abirami02612@gmail.com](mailto:abhirami02612@gmail.com)  
+📧 Feel free to reach out to me via email: [abhirami02612@gmail.com](mailto:abhirami02612@gmail.com)  
 🔗 [LinkedIn](https://www.linkedin.com/in/abirami-s-608161342)
 
 
